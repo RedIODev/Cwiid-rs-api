@@ -1,0 +1,25 @@
+[package]
+name = "cwiid"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type= ["cdylib"]
+
+[dependencies]
+libcwiid-sys = "0.1.4"
+lazy_static = "1.4.0"
+num-traits = "0.2.15"
+
+[package.metadata.cross.build]
+default-target = "armv5te-unknown-linux-gnueabi"
+
+[package.metadata.cross.target.armv5te-unknown-linux-gnueabi]
+image = "ghcr.io/cross-rs/armv5te-unknown-linux-gnueabi-cross:local"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+opt-level = 2
+strip = true
