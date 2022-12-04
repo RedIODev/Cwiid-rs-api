@@ -1,4 +1,4 @@
-use std::{error::Error, fmt::Display, sync::{Once, Mutex, PoisonError, MutexGuard}, collections::HashMap, ffi::CStr};
+use std::{error::Error, fmt::Display, sync::{Once, Mutex, PoisonError, MutexGuard}, collections::HashMap, ffi::{CStr, c_char}};
 
 use libcwiid_sys::{cwiid_wiimote_t, cwiid_set_err, wiimote};
 use lazy_static::lazy_static;
@@ -89,7 +89,7 @@ lazy_static!{
     static ref ERROR_MAP: Mutex<HashMap<usize, String>> = Mutex::new(HashMap::new());
 }
 
-unsafe extern "C" fn cwiid_error_handler(wiimote: *mut cwiid_wiimote_t, msg: *const i8, _ap: *mut libcwiid_sys::__va_list_tag) {
+unsafe extern "C" fn cwiid_error_handler(wiimote: *mut cwiid_wiimote_t, msg: *const c_char, _ap: *mut libcwiid_sys::__va_list_tag) {
     let err_msg = CStr::from_ptr(msg).to_str().expect("Couldn't parse error message.").to_owned();
     ERROR_MAP.lock().expect("Couldn't lock on ERROR_MAP.").insert(wiimote as usize, err_msg);
 }
